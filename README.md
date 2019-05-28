@@ -6,7 +6,7 @@ How to use:
 
 1. Get your bot API key from [Telegram's BotFather](https://t.me/BotFather)
 
-2. Assign BOT API Key in `config.conf`
+2. Assign BOT API Key in `bot_config.conf`
 ```bash
         export BOT_API_KEY=ABCD12345:12345AbCDefghIJK
 ```
