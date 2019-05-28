@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 
-source ~/config
+source bot_config.conf
 
 export BUILD_FINISHED=false
 
