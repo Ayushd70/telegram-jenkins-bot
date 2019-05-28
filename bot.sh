@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2019 Ayush Dubey <ayushdube70@gmail.com>
+# Copyright (C) 2019 Ayush Dubey <ayushdubey70@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-only
 
 
@@ -54,12 +54,16 @@ then
 			BUILD_FINISHED=true
 		fi
 	else
+    LOG_BUILD=$(curl --upload-file ./build.log https://transfer.sh/build.log)
 		sendMessage "BUILD FAILED WITH AN ERROR :( Check build.log"
+    sendMessage $LOG_BUILD
 		echo "BUILD FAILED :("
 	fi
 else
-       	echo "LUNCH FAILED WITH AN ERROR :( Check lunch.log"
-	sendMessage "LUNCH FAILED"
+   LOG_LUNCH=$(curl --upload-file ./lunch.log https://transfer.sh/lunch.log)
+   sendMessage "LUNCH FAILED WITH AN ERROR :( Check lunch.log"
+   sendMessage $LOG_LUNCH
+	 echo "LUNCH MENU FAILED :0"
 fi
 
 if [ $BUILD_FINISHED = true  ] ; then
@@ -70,7 +74,7 @@ ROM: $ZIPNAME
 Build: $BUILD_TYPE
 LINK: $FILE
 Size: $ZIP_SIZE
-MD5: ${MD5}
+MD5: $MD5
 INFO
     curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$INFO&chat_id=$CHAT_ID" 1> /dev/null
 echo -e;
