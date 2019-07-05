@@ -16,20 +16,20 @@ curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$M
 echo -e;
 }
 
-sendMessage "Starting build for $Device"
+sendMessage "Starting build for $DEVICE"
 
 #start build
-lunch $ROM\_$Device-userdebug | tee lunch.log
+lunch $ROM\_$DEVICE-userdebug | tee lunch.log
 # catch lunch error
 if [ $? -eq 0 ]
 then
    echo "Starting Build\(brunch\)"
 	 sendMessage "Starting Real build."
    source build/envsetup.sh
-	 brunch $Device -j$CPU_INFO | tee build.log
+	 brunch $DEVICE -j$CPU_INFO | tee build.log
 	if [ $? -eq 0 ]
 	then
-		echo "Build Done for $Rom $Device"
+		echo "Build Done for $ROM $DEVICE"
 		sendMessage "Build Completed Successfully"
     BUILD_FINISHED=true
     if [ $BUILD_FINISHED = true  ] ; then
