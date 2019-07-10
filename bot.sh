@@ -4,9 +4,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 
-source bot_config.conf
-
-export BUILD_FINISHED=false
+# Telegram
+source ~/telegram-jenkins-bot/bot-config.conf
 
 sendMessage() {
 MESSAGE=$1
@@ -16,69 +15,87 @@ curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$M
 echo -e;
 }
 
-sendMessage "Starting build for $DEVICE"
+# Set defaults
+MAKE_TARGET="bacon"
+CCACHE_DIR="$HOME/.ccache"
+OUT_DIR="out"
 
-#start build
-lunch $ROM\_$DEVICE-userdebug | tee lunch.log
-# catch lunch error
-if [ $? -eq 0 ]
-then
-   echo "Starting Build\(brunch\)"
-	 sendMessage "Starting Real build."
-   source build/envsetup.sh
-	 brunch $DEVICE -j$CPU_INFO | tee build.log
-	if [ $? -eq 0 ]
-	then
-		echo "Build Done for $ROM $DEVICE"
-		sendMessage "Build Completed Successfully"
-    BUILD_FINISHED=true
-    if [ $BUILD_FINISHED = true  ] ; then
+# ccache
+export USE_CCACHE=1
+ccache -M 100G
 
-		#upLoading
-		  OUTPUT_FILE=$(grep -o -P '(?<=Package\ Complete).*(?=.zip)' build.log)'.zip'
-		  OUTPUT_LOC=$(echo $OUTPUT_FILE | cut -f2 -d":")
-		  echo $OUTPUT_LOC
-			sendMessage "Uploading to GDrive"
-			gdrive upload $OUTPUT_LOC | tee upload.log
-			sed -e 's/.*Uploaded\(.*\)at.*/\1/' upload.log >> fileid.txt
-			sendMessage "Upload Finished."
-			sed -e 'id' fileid.txt >> final.txt
-			FILE_ID=$(cat final.txt)
-			gdrive share $FILE_ID
-			URL='https://drive.google.com/open?id='$FILE_ID
-			FILE="$(echo -e "${URL}" | tr -d '[:space:]')"
-			echo $FILE >> file.txt
-			echo $FILE
-			sendMessage $FILE
+# Switch to source directory
+cd ~/$ROM_DIR
 
-			BUILD_FINISHED=true
-		fi
-	else
-    LOG_BUILD=$(curl --upload-file ./build.log https://transfer.sh/build.log)
-		sendMessage "BUILD FAILED WITH AN ERROR :( Check build.log"
-    sendMessage $LOG_BUILD
-		echo "BUILD FAILED :("
-	fi
-else
-   LOG_LUNCH=$(curl --upload-file ./lunch.log https://transfer.sh/lunch.log)
-   sendMessage "LUNCH FAILED WITH AN ERROR :( Check lunch.log"
-   sendMessage $LOG_LUNCH
-	 echo "LUNCH MENU FAILED :0"
-fi
+# Date and time
+export BUILDDATE=$(date +%Y%m%d)
+export BUILDTIME=$(date +%H%M)
 
-if [ $BUILD_FINISHED = true  ] ; then
-MD5=`md5sum ${OUTPUT_LOC} | awk '{ print $1 }'`
+# Build Notification
+sendMessage "Starting build (<code>for-$DEVICENAME-$BUILDDATE</code>)"
 
-read -r -d '' BUILD INFO << INFO
-ROM: $ZIPNAME
-Build: $BUILD_TYPE
-LINK: $FILE
-Size: $ZIP_SIZE
-MD5: $MD5
-INFO
-    curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$INFO&chat_id=$CHAT_ID" 1> /dev/null
-echo -e;
+# Log for Build
+sendMessage "Logging to file <code>log-$BUILDDATE-$BUILDTIME.txt</code>"
+export LOGFILE=log-$BUILDDATE- $BUILDTIME.txt
 
-fi
+# Repo sync
+sendMessage "Starting repo sync. Executing command: <code>repo sync -f --force-sync --no-tags --no-clone-bundle -c</code>"
+repo sync -f --force-sync --no-tags --no-clone-bundle -c
+sendMessage "repo sync finished."
 
-exit 1
+# Lunch
+source build/envsetup.sh
+lunch "$TARGET"
+
+# Aaaand... begin compilation!"
+# Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
+sendMessage "Starting build... Building target <code>$MAKETARGET</code>"
+if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET";
+# LAUNCH PROGRESS OBSERVER
+sleep 60
+while test ! -z "$(pidof soong_ui)"; do
+        sleep 120
+        # Get latest percentage
+        PERCENTAGE=$(cat $LOGFILE | tail -n 1 | awk '{ print $2 }')
+        # REPORT PerCentage to the Group
+        sendMessage "Current percentage: $PERCENTAGE"
+      done
+EXITCODE=$?
+if [ $EXITCODE -ne 0 ]; then sendMessage "Build failed! Check log file <code>$LOGFILE</code>"; sendMessage $LOGFILE; exit 1; fi
+sendMessage "Build finished successfully! Uploading new build..."
+
+
+        # Get the path of the output zip. Few ROMs generate an intermediate otapackage zip
+    		# along with the actual flashable zip, so in order to pick that one out, I'll be
+    		# using a simple logic. Most of the ROMs that generate the intermediate zip also
+    		# generate an md5sum of the actual flashable zip. I'll simply get the filename
+    		# of that md5sum and put .zip in front of it to get the actual zip's path! :)
+    		if [ "$(ls "$OUT_DIR/target/product/$DEVICE/*.zip" | wc -l)" -gt 1 ]; then
+    			zippath=$(sed "s/\.md5sum//" <<< "$(ls "$OUT_DIR"/target/product/"$DEVICE"/*.md5sum)")
+    		else
+    			zippath=$(ls "$OUT_DIR/target/product/$DEVICE/*.zip")
+    		fi
+# Upload the ROM to google drive if it's available, else upload to transfer.sh
+if [ -x "$(command -v gdrive)" ]; then
+sendMessage "Uploading ROM to Google Drive using gdrive CLI ..."
+# In some cases when the gdrive CLI is not set up properly, upload fails.
+# In that case upload it to transfer.sh itself
+	if ! gdrive upload --share "$zippath"; then
+      sendMessage "An error occured while uploading to Google Drive."
+      sendMessage "Uploading ROM zip to transfer.sh..."
+      sendMessage "ROM zip uploaded succesfully to $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
+          fi
+        		else
+        			sendMessage "Uploading ROM zip to transfer.sh..."
+        			sendMessage "ROM zip uploaded succesfully to $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
+              if
+
+# Move the zip to the root of the source to prevent conflicts in future builds
+cp "$zippath" .
+rm -rf "$OUT_DIR"/target/product/"$DEVICE"/*.zip*
+
+#Final
+sendMessage "TEST PLEASE. @username"
+sendMessage "Developer @username"
+sendMessage "Sending Build LOGFILE"
+sendMessage "$LOGFILE"
