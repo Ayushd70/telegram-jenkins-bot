@@ -1,6 +1,6 @@
-# jenkins-telegram-bot
+# Telegram-Jenkins-Bot
 
-This is a Telegram bot that automates rom building on jenkins and notifes about the build. Once the build is done the bot sends a message in the desired group and also  uploads the build to your Google Drive.
+This is a Telegram bot that automates rom building on jenkins and notifes about the build. Once the build is done the bot sends a message in the desired group and also  uploads the build to your Google Drive or transfer.sh.
 
 How to use:
 
@@ -30,6 +30,11 @@ How to use:
 ```
 6. If You still have any doubts just check the `bot-canfig.config-example` file.
 
+7. TO start build on jenkins just use
+ ```bash
+        ./bot.sh
+```
+in your build step inside the execute step in configs of the project.        
 ### License
 The MIT License (MIT)
 
