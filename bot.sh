@@ -50,8 +50,8 @@ lunch $DEVICE-$BUILD_TYPE
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
-sendMessage "Starting build... Building target <code>$TARGET</code>"
-if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$TARGET";
+sendMessage "Starting build... Building target <code>$DEVICE</code>"
+if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$DEVICE";
 # LAUNCH PROGRESS OBSERVER
 sleep 60
 while test ! -z "$(pidof soong_ui)"; do
