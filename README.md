@@ -1,5 +1,5 @@
 # jenkins-telegram-bot
- 
+
 This is a Telegram bot that automates rom building on jenkins and notifes about the build. Once the build is done the bot sends a message in the desired group and also  uploads the build to your Google Drive.
 
 How to use:
@@ -15,16 +15,18 @@ How to use:
         export CHAT_ID= should @groupname or use the telegram provided chat id if the grp is private
 ```
 
-4. Assign your configs for eg. to build LineageOS for xyz device
+4. Assign your configs for eg. to build for xyz device
 ```bash
         # Configs
-        ROM=""
-        Device=""
+        ROM_DIR="" #Name of the rom dir eg-aosip,lineageos
+        DEVICE="" #Code Name of the device that you are building for eg-wt88047
 ```
 
 5. The Bots can also sends extra info after the build is done
-`ZIPNAME` will send package name to send
-`BUILD_TYPE` can be set accordingly
+`USERNAMES="" #Username of the testers so that they get tagged automatically
+ DEV_USERNAME="" #Username of the developer to notify him once the build is done
+`
+6. If You still have any doubts just check the `bot-canfig.config-example` file.
 
 ### License
 The MIT License (MIT)

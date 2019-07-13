@@ -40,17 +40,18 @@ export LOGFILE=log-$BUILDDATE- $BUILDTIME.txt
 
 # Repo sync
 sendMessage "Starting repo sync. Executing command: <code>repo sync -f --force-sync --no-tags --no-clone-bundle -c</code>"
-repo sync -f --force-sync --no-tags --no-clone-bundle -c
+repo sync -f --force-sync --no-tags --no-clone-bundle -c -CPU_INFO
 sendMessage "repo sync finished."
 
 # Lunch
 source build/envsetup.sh
-lunch "$TARGET"
+sendMessage "Starting lunch... Lunching <code>$DEVICE</code>"
+lunch $DEVICE-$BUILD_TYPE
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
-sendMessage "Starting build... Building target <code>$MAKETARGET</code>"
-if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET";
+sendMessage "Starting build... Building target <code>$TARGET</code>"
+if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$TARGET";
 # LAUNCH PROGRESS OBSERVER
 sleep 60
 while test ! -z "$(pidof soong_ui)"; do
@@ -95,7 +96,7 @@ cp "$zippath" .
 rm -rf "$OUT_DIR"/target/product/"$DEVICE"/*.zip*
 
 #Final
-sendMessage "TEST PLEASE. @username"
-sendMessage "Developer @username"
+sendMessage "TEST PLEASE. $USERNAME"
+sendMessage "Developer $DEV_USERNAME"
 sendMessage "Sending Build LOGFILE"
 sendMessage "$LOGFILE"

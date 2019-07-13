@@ -1,0 +1,19 @@
+#Configuration For bot.sh needs to be edited.#CPU INFO for number of cores
+#BUILD_TYPE and ZIPNAME can be edited according to your choice
+
+#Telegram configs
+export CHAT_ID=1234647414818
+export BOT_API_KEY=141727481:7y8hhuiyh91992
+
+#Device Configs
+ROM_DIR=aosip
+DEVICE=wt88047
+
+#CPU INFO for number of cores
+CPU_INFO="-j$(grep -c ^processor /proc/cpuinfo)"
+
+#Extras
+ZIPNAME="AOSIP-PIE-FOR-wt88047"
+BUILD_TYPE="userdebug"
+USERNAMES="mr.x, mr.y"
+DEV_USERNAME="@ayushd70"
