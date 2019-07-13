@@ -23,9 +23,11 @@ How to use:
 ```
 
 5. The Bots can also sends extra info after the build is done
-`USERNAMES="" #Username of the testers so that they get tagged automatically
- DEV_USERNAME="" #Username of the developer to notify him once the build is done
-`
+```bash
+       #Extra Configs
+       USERNAMES="" #Username of the testers so that they get tagged automatically
+       DEV_USERNAME="" #Username of the developer to notify him once the build is done
+```
 6. If You still have any doubts just check the `bot-canfig.config-example` file.
 
 ### License
