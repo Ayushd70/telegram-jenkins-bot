@@ -51,7 +51,7 @@ lunch $DEVICE-$BUILD_TYPE
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
 sendMessage "Starting build... Building target <code>$DEVICE</code>"
-if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET";
+if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET"; then
 # LAUNCH PROGRESS OBSERVER
 sleep 60
 while test ! -z "$(pidof soong_ui)"; do
@@ -64,7 +64,6 @@ while test ! -z "$(pidof soong_ui)"; do
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then sendMessage "Build failed! Check log file <code>$LOGFILE</code>"; sendMessage $LOGFILE; exit 1; fi
 sendMessage "Build finished successfully! Uploading new build..."
-
 
         # Get the path of the output zip. Few ROMs generate an intermediate otapackage zip
     		# along with the actual flashable zip, so in order to pick that one out, I'll be
@@ -89,14 +88,20 @@ sendMessage "Uploading ROM to Google Drive using gdrive CLI ..."
         		else
         			sendMessage "Uploading ROM zip to transfer.sh..."
         			sendMessage "ROM zip uploaded succesfully to $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
-              if
+            fi
 
 # Move the zip to the root of the source to prevent conflicts in future builds
 cp "$zippath" .
 rm -rf "$OUT_DIR"/target/product/"$DEVICE"/*.zip*
+sendMessage "ROM zip copied to source directory; deleted from outdir. Good bye!"
+		exit 0
+	sendMessage "$MAKE_TARGET compiled succesfully :-) Good bye!"; fi
+fi
 
 #Final
 sendMessage "TEST PLEASE. $USERNAME"
 sendMessage "Developer $DEV_USERNAME"
 sendMessage "Sending Build LOGFILE"
 sendMessage "$LOGFILE"
+
+exit;
