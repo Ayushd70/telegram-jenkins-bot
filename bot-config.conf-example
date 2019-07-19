@@ -8,6 +8,7 @@ export BOT_API_KEY=141727481:7y8hhuiyh91992
 #Device Configs
 ROM_DIR=aosip
 DEVICE=wt88047
+MAKE_TARGET=bacon
 
 #CPU INFO for number of cores
 CPU_INFO="-j$(grep -c ^processor /proc/cpuinfo)"

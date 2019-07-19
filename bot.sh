@@ -25,7 +25,7 @@ export USE_CCACHE=1
 ccache -M 100G
 
 # Switch to source directory
-cd ~/$ROM_DIR
+cd $ROM_DIR
 
 # Date and time
 export BUILDDATE=$(date +%Y%m%d)
@@ -36,7 +36,7 @@ sendMessage "Starting build (<code>for-$DEVICENAME-$BUILDDATE</code>)"
 
 # Log for Build
 sendMessage "Logging to file <code>log-$BUILDDATE-$BUILDTIME.txt</code>"
-export LOGFILE=log-$BUILDDATE- $BUILDTIME.txt
+export LOGFILE=log-$BUILDDATE-$BUILDTIME.txt
 
 # Repo sync
 sendMessage "Starting repo sync. Executing command: <code>repo sync -f --force-sync --no-tags --no-clone-bundle -c</code>"
@@ -51,7 +51,7 @@ lunch $DEVICE-$BUILD_TYPE
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
 sendMessage "Starting build... Building target <code>$DEVICE</code>"
-if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$DEVICE";
+if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET";
 # LAUNCH PROGRESS OBSERVER
 sleep 60
 while test ! -z "$(pidof soong_ui)"; do
