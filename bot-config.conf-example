@@ -14,7 +14,7 @@ MAKE_TARGET=bacon
 CPU_INFO="-j$(grep -c ^processor /proc/cpuinfo)"
 
 #Extras
-ZIPNAME="AOSIP-PIE-FOR-wt88047"
-BUILD_TYPE="userdebug"
-USERNAMES="mr.x, mr.y"
-DEV_USERNAME="@ayushd70"
+ZIPNAME=AOSIP-PIE-FOR-wt88047
+BUILD_TYPE=userdebug
+USERNAMES=@mr.x, @mr.y
+DEV_USERNAME=@ayushd70
