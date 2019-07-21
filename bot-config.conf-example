@@ -6,7 +6,8 @@ export CHAT_ID=1234647414818
 export BOT_API_KEY=141727481:7y8hhuiyh91992
 
 #Device Configs
-ROM_DIR=aosip
+ROM_DIR=aosip-pie
+ROM=aosip
 DEVICE=wt88047
 MAKE_TARGET=bacon
 
