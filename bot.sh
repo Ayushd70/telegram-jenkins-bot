@@ -39,18 +39,18 @@ sendMessage "Logging to file log-$BUILDDATE-$BUILDTIME.txt"
 export LOGFILE=log-$BUILDDATE-$BUILDTIME.txt
 
 # Repo sync
-sendMessage "Starting repo sync. Executing command: <code>repo sync -f --force-sync --no-tags --no-clone-bundle -c</code>"
+sendMessage "Starting repo sync. Executing command: repo sync -f --force-sync --no-tags --no-clone-bundle -c"
 repo sync -f --force-sync --no-tags --no-clone-bundle -c -$CPU_INFO
 sendMessage "repo sync finished."
 
 # Lunch
 source build/envsetup.sh
-sendMessage "Starting lunch... Lunching <code>$DEVICE</code>"
+sendMessage "Starting lunch... Lunching $DEVICE"
 lunch $ROM_$DEVICE-$BUILD_TYPE
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
-sendMessage "Starting build... Building target <code>$DEVICE</code>"
+sendMessage "Starting build... Building target $DEVICE"
 if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET"; then
 # LAUNCH PROGRESS OBSERVER
 sleep 60
@@ -62,7 +62,7 @@ while test ! -z "$(pidof soong_ui)"; do
         sendMessage "Current percentage: $PERCENTAGE"
       done
 EXITCODE=$?
-if [ $EXITCODE -ne 0 ]; then sendMessage "Build failed! Check log file <code>$LOGFILE</code>"; sendMessage $LOGFILE; exit 1; fi
+if [ $EXITCODE -ne 0 ]; then sendMessage "Build failed! Check log file $LOGFILE"; sendMessage $LOGFILE; exit 1; fi
 sendMessage "Build finished successfully! Uploading new build..."
 
         # Get the path of the output zip. Few ROMs generate an intermediate otapackage zip
