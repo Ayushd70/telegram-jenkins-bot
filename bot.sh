@@ -40,7 +40,7 @@ export LOGFILE=log-$BUILDDATE-$BUILDTIME.txt
 
 # Repo sync
 sendMessage "Starting repo sync. Executing command: <code>repo sync -f --force-sync --no-tags --no-clone-bundle -c</code>"
-repo sync -f --force-sync --no-tags --no-clone-bundle -c -CPU_INFO
+repo sync -f --force-sync --no-tags --no-clone-bundle -c -$CPU_INFO
 sendMessage "repo sync finished."
 
 # Lunch
