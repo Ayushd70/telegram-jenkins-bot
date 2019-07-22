@@ -55,7 +55,7 @@ if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET
 # LAUNCH PROGRESS OBSERVER
 sleep 60
 while test ! -z "$(pidof soong_ui)"; do
-        sleep 120
+        sleep 300
         # Get latest percentage
         PERCENTAGE=$(cat $LOGFILE | tail -n 1 | awk '{ print $2 }')
         # REPORT PerCentage to the Group
