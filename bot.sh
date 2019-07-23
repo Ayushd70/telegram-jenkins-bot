@@ -46,7 +46,7 @@ sendMessage "repo sync finished."
 # Lunch
 source build/envsetup.sh
 sendMessage "Starting lunch... Lunching $DEVICE"
-lunch $ROM_$DEVICE-$BUILD_TYPE
+lunch "$ROM"\_"$DEVICE"-"$BUILD_TYPE"
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
