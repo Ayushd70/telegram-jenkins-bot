@@ -70,10 +70,10 @@ sendMessage "Build finished successfully! Uploading new build..."
     		# using a simple logic. Most of the ROMs that generate the intermediate zip also
     		# generate an md5sum of the actual flashable zip. I'll simply get the filename
     		# of that md5sum and put .zip in front of it to get the actual zip's path! :)
-    		if [ "$(ls "$OUT_DIR/target/product/$DEVICE/*.zip" | wc -l)" -gt 1 ]; then
-    			zippath=$(sed "s/\.md5sum//" <<< "$(ls "$OUT_DIR"/target/product/"$DEVICE"/*.md5sum)")
+    		if [ "$(ls "/home/$USER/$ROM_DIR/$OUT_DIR/target/product/$DEVICE/*.zip" | wc -l)" -gt 1 ]; then
+    			zippath=$(sed "s/\.md5sum//" <<< "$(ls "/home/$USER/$ROM_DIR/$OUT_DIR"/target/product/"$DEVICE"/*.md5sum)")
     		else
-    			zippath=$(ls "$OUT_DIR/target/product/$DEVICE/*.zip")
+    			zippath=$(ls "/home/$USER/$ROM_DIR/$OUT_DIR/target/product/$DEVICE/*.zip")
     		fi
 # Upload the ROM to google drive if it's available, else upload to transfer.sh
 if [ -x "$(command -v gdrive)" ]; then
@@ -99,7 +99,7 @@ sendMessage "ROM zip copied to source directory; deleted from outdir. Good bye!"
 fi
 
 #Final
-sendMessage "TEST PLEASE. $USERNAME"
+sendMessage "TEST PLEASE $USERNAME"
 sendMessage "Developer $DEV_USERNAME"
 sendMessage "Sending Build LOGFILE"
 sendMessage "$LOGFILE"
