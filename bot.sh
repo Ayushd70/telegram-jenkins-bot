@@ -18,7 +18,7 @@ echo -e;
 # Set defaults
 MAKE_TARGET="bacon"
 CCACHE_DIR="$HOME/.ccache"
-OUT_DIR="out"
+OUT_DIR="$(pwd)/out"
 
 # ccache
 export USE_CCACHE=1
@@ -70,11 +70,8 @@ sendMessage "Build finished successfully! Uploading new build..."
     		# using a simple logic. Most of the ROMs that generate the intermediate zip also
     		# generate an md5sum of the actual flashable zip. I'll simply get the filename
     		# of that md5sum and put .zip in front of it to get the actual zip's path! :)
-    		if [ "$(ls "/home/$USER/$ROM_DIR/$OUT_DIR/target/product/$DEVICE/*.zip" | wc -l)" -gt 1 ]; then
-    			zippath=$(sed "s/\.md5sum//" <<< "$(ls "/home/$USER/$ROM_DIR/$OUT_DIR"/target/product/"$DEVICE"/*.md5sum)")
-    		else
-    			zippath=$(ls "/home/$USER/$ROM_DIR/$OUT_DIR/target/product/$DEVICE/*.zip")
-    		fi
+        zipdir=$(get_build_var PRODUCT_OUT)
+		   zippath=$(ls "$zipdir"/*2019*.zip | tail -n -1)
 # Upload the ROM to google drive if it's available, else upload to transfer.sh
 if [ -x "$(command -v gdrive)" ]; then
 sendMessage "Uploading ROM to Google Drive using gdrive CLI ..."
@@ -83,19 +80,14 @@ sendMessage "Uploading ROM to Google Drive using gdrive CLI ..."
 	if ! gdrive upload --share "$zippath"; then
       sendMessage "An error occured while uploading to Google Drive."
       sendMessage "Uploading ROM zip to transfer.sh..."
-      sendMessage "ROM zip uploaded succesfully to $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
+      sendMessage "ROM zip uploaded succesfully to: $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
           fi
         		else
         			sendMessage "Uploading ROM zip to transfer.sh..."
-        			sendMessage "ROM zip uploaded succesfully to $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
+        			sendMessage "ROM zip uploaded succesfully to: $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
             fi
-
-# Move the zip to the root of the source to prevent conflicts in future builds
-cp "$zippath" .
-rm -rf "$OUT_DIR"/target/product/"$DEVICE"/*.zip*
-sendMessage "ROM zip copied to source directory; deleted from outdir. Good bye!"
 		exit 0
-	sendMessage "$MAKE_TARGET compiled succesfully :-) Good bye!"; fi
+	sendMessage "$MAKE_TARGET compiled succesfully in  $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) Good bye!";
 fi
 
 #Final
