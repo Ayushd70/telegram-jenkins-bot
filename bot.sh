@@ -15,9 +15,12 @@ curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$M
 echo -e;
 }
 
-# ccache
+# Cache
+export CCACHE_EXEC="$(command -v ccache)"
 export USE_CCACHE=1
-ccache -M 100G
+export CCACHE_DIR=/home/$username/.cache
+ccache -M 500G
+export _JAVA_OPTIONS=-Xmx16g
 
 # Switch to source directory
 cd $ROM_DIR
