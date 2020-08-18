@@ -31,7 +31,7 @@ export BUILDDATE=$(date +%Y%m%d)
 export BUILDTIME=$(date +%H%M)
 
 # Build Notification
-sendMessage "Starting build for ${DEVICE}-${BUILDDATE}"
+sendMessage "Starting build for ${DEVICE}-${BUILDDATE}-${BUILD_TIME} build, check progress here ${BUILD_URL}"
 
 # Log for Build
 sendMessage "Logging to file log ${BUILDDATE}-${BUILDTIME.txt}"
@@ -44,8 +44,8 @@ sendMessage "Repo Sync Finished."
 
 # Lunch
 source build/envsetup.sh
-sendMessage "Starting lunch... Lunching $DEVICE"
-lunch "$ROM"\_"$DEVICE"-"$BUILD_TYPE"
+sendMessage "Lunching ${DEVICE}-"${BUILD_TYPE}"
+lunch "${ROM}"\_"${DEVICE}"-"${BUILD_TYPE}"
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
