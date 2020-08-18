@@ -26,6 +26,13 @@ ccache -M 100G
 # Switch to source directory
 cd $ROM_DIR
 
+# Clean
+if [[ ${CLEAN} =~ ^(clean|deviceclean|installclean)$ ]]; then
+    m "${CLEAN}"
+else
+    rm -rf "${OUT}"*
+fi
+
 # Date and time
 export BUILDDATE=$(date +%Y%m%d)
 export BUILDTIME=$(date +%H%M)
@@ -46,6 +53,8 @@ sendMessage "Repo Sync Finished."
 source build/envsetup.sh
 sendMessage "Lunching ${DEVICE}-"${BUILD_TYPE}"
 lunch "${ROM}"\_"${DEVICE}"-"${BUILD_TYPE}"
+
+
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
