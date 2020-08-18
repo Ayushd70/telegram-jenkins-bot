@@ -31,16 +31,16 @@ export BUILDDATE=$(date +%Y%m%d)
 export BUILDTIME=$(date +%H%M)
 
 # Build Notification
-sendMessage "Starting build (for-$DEVICE-$BUILDDATE)"
+sendMessage "Starting build for ${DEVICE}-${BUILDDATE}"
 
 # Log for Build
-sendMessage "Logging to file log-$BUILDDATE-$BUILDTIME.txt"
-export LOGFILE=log-$BUILDDATE-$BUILDTIME.txt
+sendMessage "Logging to file log ${BUILDDATE}-${BUILDTIME.txt}"
+export LOGFILE=log-${BUILDDATE}-${BUILDTIME}.txt
 
 # Repo sync
-sendMessage "Starting repo sync. Executing command: repo sync -f --force-sync --no-tags --no-clone-bundle -c"
-repo sync -f --force-sync --no-tags --no-clone-bundle -c -$CPU_INFO
-sendMessage "repo sync finished."
+sendMessage "Starting repo sync. Executing command: repo sync -f --force-sync --no-tags --no-clone-bundle -c -j"$(nproc)""
+repo sync --force-sync --no-tags --no-clone-bundle -c -j"$(nproc)"
+sendMessage "Repo Sync Finished."
 
 # Lunch
 source build/envsetup.sh
