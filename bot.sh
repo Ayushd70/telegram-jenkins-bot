@@ -15,10 +15,6 @@ curl -s "https://api.telegram.org/bot${BOT_API_KEY}/sendmessage" --data "text=$M
 echo -e;
 }
 
-# Set defaults
-CCACHE_DIR="$HOME/.ccache"
-OUT_DIR="$(pwd)/out"
-
 # ccache
 export USE_CCACHE=1
 ccache -M 100G
