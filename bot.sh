@@ -57,20 +57,15 @@ lunch "${ROM}"\_"${DEVICE}"-"${BUILD_TYPE}"
 
 # Aaaand... begin compilation!"
 # Equivalent of "mka" command, modified to use 2 x (no. of cores) threads for compilation
-sendMessage "Starting build... Building target $DEVICE"
-if schedtool -B -n 1 -e ionice -n 1 make -j$(($(nproc --all) * 2)) "$MAKE_TARGET"; then
-# LAUNCH PROGRESS OBSERVER
-sleep 60
-while test ! -z "$(pidof soong_ui)"; do
-        sleep 300
-        # Get latest percentage
-        PERCENTAGE=$(cat $LOGFILE | tail -n 1 | awk '{ print $2 }')
-        # REPORT PerCentage to the Group
-        sendMessage "Current percentage: $PERCENTAGE"
-      done
+if mka "${MAKE_TARGET}"; then
+    sendMessage "${DEVICE} build is done, check ${BUILD_URL}) for details!"
 EXITCODE=$?
-if [ $EXITCODE -ne 0 ]; then sendMessage "Build failed! Check log file $LOGFILE"; sendMessage $LOGFILE; exit 1; fi
-sendMessage "Build finished successfully! Uploading new build..."
+if [ $EXITCODE -ne 0 ]; then 
+sendMessage "Build failed! Check log file ${LOGFILE}"; 
+sendMessage ${LOGFILE}; 
+exit 1; 
+fi
+  sendMessage "Build finished successfully! for ${DEVICE}  Uploading Build"
 
         # Get the path of the output zip. Few ROMs generate an intermediate otapackage zip
     		# along with the actual flashable zip, so in order to pick that one out, I'll be
@@ -78,22 +73,18 @@ sendMessage "Build finished successfully! Uploading new build..."
     		# generate an md5sum of the actual flashable zip. I'll simply get the filename
     		# of that md5sum and put .zip in front of it to get the actual zip's path! :)
         zipdir=$(get_build_var PRODUCT_OUT)
-		   zippath=$(ls "$zipdir"/*2019*.zip | tail -n -1)
-# Upload the ROM to google drive if it's available, else upload to transfer.sh
-if [ -x "$(command -v gdrive)" ]; then
-sendMessage "Uploading ROM to Google Drive using gdrive CLI ..."
-# In some cases when the gdrive CLI is not set up properly, upload fails.
-# In that case upload it to transfer.sh itself
-	if ! gdrive upload --share "$zippath"; then
-      sendMessage "An error occured while uploading to Google Drive."
-      sendMessage "Uploading ROM zip to transfer.sh..."
+		   zippath=$(ls "$zipdir"/*2020*.zip | tail -n -1)
+
+  #Upload to Gdrive or Transfer.sh
+  if [ "$UPLOAD" = "rclone" ]; then
+    sendMessage "Uploading ROM to Google Drive using gdrive CLI "
+    rclone copy "$zippath"  gdrive:"${UPLOAD_FOLDER}"
+    FOLDER_LINK="$(rclone link grive:"$UPLOAD_FOLDER")"
+    sendMessage "Build Uploaded Here $FOLDER_LINK"
+else
+    sendMessage "Uploading ROM zip to transfer.sh"
       sendMessage "ROM zip uploaded succesfully to: $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
-          fi
-        		else
-        			sendMessage "Uploading ROM zip to transfer.sh..."
-        			sendMessage "ROM zip uploaded succesfully to: $(curl -sT "$zippath" https://transfer.sh/"$(basename "$zippath")")"
-            fi
-		exit 0
+fi
 	sendMessage "$MAKE_TARGET compiled succesfully in  $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) Good bye!";
 fi
 
