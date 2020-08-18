@@ -16,7 +16,6 @@ echo -e;
 }
 
 # Set defaults
-MAKE_TARGET="bacon"
 CCACHE_DIR="$HOME/.ccache"
 OUT_DIR="$(pwd)/out"
 

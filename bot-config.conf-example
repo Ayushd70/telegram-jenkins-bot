@@ -9,7 +9,7 @@ export BOT_API_KEY=141727481:7y8hhuiyh91992
 ROM_DIR=aosip-pie
 ROM=aosip
 DEVICE=wt88047
-MAKE_TARGET=bacon
+MAKE_TARGET=kronic
 
 #CPU INFO for number of cores
 CPU_INFO="j$(grep -c ^processor /proc/cpuinfo)"
