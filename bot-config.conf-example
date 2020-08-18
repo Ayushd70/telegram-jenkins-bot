@@ -5,17 +5,23 @@
 export CHAT_ID=1234647414818
 export BOT_API_KEY=141727481:7y8hhuiyh91992
 
+#Build Configs
+CLEAN=cleaninstall
+MAKE_TARGET=kronic
+BUILD_TYPE=user
+
 #Device Configs
 ROM_DIR=aosip-pie
 ROM=aosip
 DEVICE=wt88047
-MAKE_TARGET=kronic
 
-#CPU INFO for number of cores
-CPU_INFO="j$(grep -c ^processor /proc/cpuinfo)"
+#Upload to Gdrive or Transfer.sh
+//Need to setup rclone before using it. some guides are 
+* https://telegra.ph/Setting-up-rclone-for-GDrive-07-13 and 
+* https://telegra.ph/Send-files-from-serverPC-to-any-remote-folder-using-rclone-07-09
+UPLOAD=rclone 
 
 #Extras
 ZIPNAME=AOSIP-PIE-FOR-wt88047
-BUILD_TYPE=userdebug
 USERNAMES=@mr.x, @mr.y
 DEV_USERNAME=@ayushd70
