@@ -47,13 +47,12 @@ How to use:
 ```
 7. If You still have any doubts just check the `bot-canfig.config-example` file.
 
-8. TO start build on jenkins just add 
+8. To start build on jenkins just add the following in your build step inside the execute step under configure  the project.   
  ```bash
         cd ~/telegram-jenkins-bot/
         chmod +x bot.sh
         ./bot.sh
 ```
-in your build step inside the execute step in configs of the project.        
 
 ### License
 The MIT License (MIT)
