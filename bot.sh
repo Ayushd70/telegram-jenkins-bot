@@ -1,6 +1,6 @@
 #!/bin/bash
 # Copyright (C) 2019-2020 Ayush Dubey <ayushdubey70@gmail.com>
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: MIT License
 # shellcheck disable=SC1090,SC1091,2153,2154,2155,2164
 # SC1090:ShellCheck can't follow non-constant source. Use a directive to specify location.
 # SC1091:Not following: (error message here)
