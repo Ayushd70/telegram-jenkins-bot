@@ -22,6 +22,5 @@ DEVICE=wt88047
 UPLOAD=rclone 
 
 #Extras
-ZIPNAME=AOSIP-PIE-FOR-wt88047
 USERNAMES=@mr.x, @mr.y
 DEV_USERNAME=@ayushd70
