@@ -1,0 +1,10 @@
+on: [push, pull_request]
+name: ShellCheck scripts
+jobs:
+  shellCheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run shellcheck.
+      run: shellcheck --exclude=SC1909,SC1091,SC2153,SC2154,SC2155,SC2164 bot.sh
